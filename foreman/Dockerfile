@@ -16,5 +16,5 @@ RUN git clone ${REPO_URL} /usr/src/app
 RUN [ -e 'package.json' ] && npm install || exit 0
 ADD database.yml config/database.yml
 ADD Gemfile.local.rb bundler.d/Gemfile.local.rb
+RUN bundle install --clean --retry=100 --jobs=10 --without mysql:test:mysql2:development:sqlite:jenkins:openid:libvirt
 ADD settings.yaml config/settings.yaml
-RUN bundle --without mysql:test:mysql2:development:sqlite:jenkins:openid:libvirt
