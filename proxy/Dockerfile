@@ -1,8 +1,6 @@
 FROM fedora:latest
 LABEL MAINTAINER="shlomi@ben-hanna.com"
-RUN dnf -y update
-RUN dnf -y install ruby{,-devel,gems,-irb} rubygem-{nokogiri,bundler,unf_ext,rdoc} git redhat-rpm-config nodejs git postgresql-devel gcc-c++ make hostname
-RUN dnf clean all
+RUN RUN dnf -y update && dnf -y install ruby{,-devel,gems} rubygem-{bundler,rdoc,sqlite3,unf_ext} git gcc-c++ make hostname && dnf clean all
 
 ENV REPO_URL=https://github.com/theforeman/smart-proxy.git
 
@@ -11,5 +9,8 @@ WORKDIR /usr/src/app
 
 RUN git clone ${REPO_URL} /usr/src/app
 RUN mkdir /usr/src/app/logs
-RUN bundle --without bmc:krb5:libvirt:puppet_proxy_legacy:test:windows 
+ADD Gemfile.local.rb bundler.d/Gemfile.local.rb
+RUN bundle install --clean --retry=100 --jobs=10 --without bmc:development:krb5:libvirt:puppet_proxy_legacy:test:windows
+RUN ssh-keygen -t rsa -P '' -f /root/.ssh/id_rsa_foreman_proxy
 ADD settings.yml config/settings.yml
+ADD settings.d config/settings.d

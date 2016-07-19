@@ -15,6 +15,7 @@
 :require_ssl_smart_proxies: false
 :foreman_url: http://haproxy
 :unattended_url: http://haproxy
+:remote_execution_fallback_proxy: true
 :loggers:
   :app:
     :enabled: true

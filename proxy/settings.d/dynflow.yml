@@ -1,0 +1,5 @@
+---
+:enabled: true
+:console_auth: true
+:daemonize: true
+:port: 8008
