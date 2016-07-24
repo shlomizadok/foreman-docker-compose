@@ -14,17 +14,28 @@ Once the environment is up, you may simply login to `http://localhost`. SSL is d
 
 ### fact uploading
 
-the client container can upload facts, however, you would need to change the following setting:
-```
-restrict_registered_smart_proxies=false
-require_ssl_smart_proxies=false
-```
+
+Client container to simulate fact uploading.
+
+To use simply execute:
+`docker-compose scale client=10` # or any other number of you clients you want
+to run concurrently.
+
+TODO: make the client code a bit more robust so it retry if the server is not
+available (often happens on first time you run the containers)
+
+### Remote Execution (REX) client
+
+
+A container that runs SSH, uses similar bits from the Client container above to
+register the host (using facts) and keeps SSH daemon running to accept REX
+calls.
 
 
 ### SELinux Denials
 
 
-the way haproxy auto configure itself based on scale, is by quering docker itself, this raises a selinux alert, if you want haproxy to autoconfigure currently you need to setenfore=0.
+The way haproxy auto configure itself based on scale, is by querying docker itself, this raises a selinux alert, if you want haproxy to autoconfigure currently you need to setenfore=0.
 
 Please note that `docker-compose up -d` binds your localhost:80 to the haproxy container port 80, so once complete you can go to ```http://localhost```
 
