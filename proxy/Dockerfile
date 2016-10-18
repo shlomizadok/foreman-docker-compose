@@ -1,6 +1,7 @@
 FROM fedora:latest
 LABEL MAINTAINER="shlomi@ben-hanna.com"
-RUN RUN dnf -y update && dnf -y install ruby{,-devel,gems} rubygem-{bundler,rdoc,sqlite3,unf_ext} git gcc-c++ make hostname && dnf clean all
+RUN dnf -y install ruby{,-devel,gems} rubygem-{bundler,rdoc,sqlite3,unf_ext,gssapi} git gcc-c++ make hostname redhat-rpm-config; dnf -y update; dnf clean all
+MAINTAINER ohadlevy@gmail.com
 
 ENV REPO_URL=https://github.com/theforeman/smart-proxy.git
 

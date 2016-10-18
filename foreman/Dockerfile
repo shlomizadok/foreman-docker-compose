@@ -1,7 +1,5 @@
 FROM fedora:latest
-#RUN dnf -y update
-RUN dnf -y install ruby{,-devel,gems} rubygem-{nokogiri,bundler,unf_ext,rdoc} redhat-rpm-config nodejs npm git postgresql-devel gcc-c++ make hostname
-RUN dnf clean all
+RUN dnf -y update && dnf -y install ruby{,-devel,gems} rubygem-{nokogiri,bundler,unf_ext,rdoc} redhat-rpm-config nodejs npm git postgresql-devel gcc-c++ make hostname && dnf clean all -y
 LABEL MAINTAINER="ohadlevy@gmail.com"
 
 RUN mkdir -p /usr/src/app
@@ -12,8 +10,7 @@ ENV FOREMAN_APIPIE_LANGS=en
 ENV REPO_URL=https://github.com/theforeman/foreman.git
 
 #TODO: support local path instead of checkout
-RUN git clone ${REPO_URL} /usr/src/app
-RUN [ -e 'package.json' ] && npm install || exit 0
+RUN git clone ${REPO_URL} /usr/src/app && [ -e 'package.json' ] && npm install || exit 0
 ADD database.yml config/database.yml
 ADD Gemfile.local.rb bundler.d/Gemfile.local.rb
 RUN bundle install --clean --retry=100 --jobs=10 --without mysql:test:mysql2:development:sqlite:jenkins:openid:libvirt
