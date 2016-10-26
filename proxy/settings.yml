@@ -28,7 +28,7 @@
 # (default: true)
 #:forward_verify: true
 
-:foreman_url: http://127.0.0.1:3000
+:foreman_url: http://haproxy
 
 # SSL settings for client authentication against Foreman. If undefined, the values
 # from general SSL options are used instead. Mainly useful when Foreman uses

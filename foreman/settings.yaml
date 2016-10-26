@@ -10,6 +10,12 @@
 :support_jsonp: false
 :mark_translated: false
 :admin_email: noreply@foreman.org
+
+:require_ssl_smart_proxies: false
+:restrict_registered_smart_proxies: false
+:foreman_url: http://haproxy
+:unattended_url: http://haproxy
+:remote_execution_fallback_proxy: true
 :loggers:
   :app:
     :enabled: true

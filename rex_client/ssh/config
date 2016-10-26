@@ -1,0 +1,3 @@
+Host *
+  IdentityFile ssh/id_rsa_foreman_proxy
+  UserKnownHostsFile ssh/known_hosts

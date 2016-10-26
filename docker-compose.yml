@@ -48,3 +48,10 @@ services:
       - ./webpack:/usr/src/app/public/webpack
     depends_on:
       - db
+  rex-client:
+    build: rex_client
+    environment:
+      - FOREMAN_URL=http://haproxy
+      - PROXY_URL=http://proxy
+    depends_on:
+      - haproxy
