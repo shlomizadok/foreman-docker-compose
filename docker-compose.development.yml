@@ -1,0 +1,51 @@
+version: '2'
+services:
+  foreman-development:
+    build:
+      context: foreman
+      args:
+        foreman_mode: development
+        foreman_version: develop
+    environment:
+      FOREMAN_MODE: development
+      BUNDLE_WITHOUT: "mysql:mysql2:jenkins:openid:libvirt"
+    command: foreman start
+    ports:
+      - 3000:3000
+    # volumes:
+    #   - $HOME/foreman:/usr/src/foreman-development
+    links:
+      - db
+      - proxy
+
+  foreman-test:
+    build:
+      context: foreman
+      args:
+        foreman_mode: test
+        foreman_version: develop
+    command: bundle exec rake test
+    # volumes:
+    #   - $HOME/foreman:/usr/src/foreman-development
+    links:
+      - db
+
+  db:
+    image: postgres
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - ./pgdata-development:/var/lib/postgresql/data/pgdata:z
+
+  proxy:
+    build: proxy
+    command: /usr/src/app/bin/smart-proxy
+    ports:
+      - 8001:8000
+
+  client:
+    build: client
+    environment:
+      - FOREMAN_URL=http://foreman:3000
+    depends_on:
+      - foreman-development

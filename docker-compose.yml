@@ -1,25 +1,35 @@
 version: '2'
 services:
+  foreman:
+    build:
+      context: foreman
+      args:
+        foreman_version: 1.13-stable
+        foreman_mode: production
+    environment:
+      FOREMAN_MODE: production
+      BUNDLE_WITHOUT: "mysql:test:mysql2:development:sqlite:jenkins:openid:libvirt"
+    command: rails server -p 80 -b 0.0.0.0
+    ports:
+      - 80
+    volumes:
+      - ./.assets-cache/production/assets:/usr/src/foreman/public/assets:z
+      - ./.assets-cache/production/webpack:/usr/src/foreman/public/webpack:z
+    links:
+      - db
+      - memcache
+      - proxy
+
   memcache:
     image: memcached
+
   db:
     image: postgres:9.5
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - ./pgdata:/var/lib/postgresql/data/pgdata:z
-  foreman:
-    build: foreman
-    command: rails server -p 80 -b 0.0.0.0
-    ports:
-      - 80
-    volumes:
-      - ./assets:/usr/src/app/public/assets:z
-      - ./webpack:/usr/src/app/public/webpack:z
-    links:
-      - db
-      - memcache
-      - proxy
+
   haproxy:
     image: dockercloud/haproxy
     volumes:
@@ -40,11 +50,3 @@ services:
       - FOREMAN_URL=http://haproxy
     depends_on:
       - haproxy
-  foreman-init:
-    build: foreman
-    command: bundle exec rake db:migrate db:seed assets:clean assets:precompile webpack:compile apipie:cache:index
-    volumes:
-      - ./assets:/usr/src/app/public/assets
-      - ./webpack:/usr/src/app/public/webpack
-    depends_on:
-      - db

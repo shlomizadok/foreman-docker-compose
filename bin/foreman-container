@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+build-production () {
+  echo "=> Building docker production images"
+  docker-compose -f docker-compose.yml build
+}
+
+build-development () {
+  echo "=> Building docker development images"
+  docker-compose -f docker-compose.development.yml build
+}
+
+build () {
+  build-production
+  build-development
+  echo "=> Docker images built."
+}
+
+up-development () {
+  docker-compose -f docker-compose.development.yml up
+}
+
+up() {
+  docker-compose -f docker-compose.yml up
+}
+
+run-test () {
+  echo "=> Running tests"
+  docker-compose -f docker-compose.development.yml run foreman-test "${@:-1}"
+}
+
+run-development () {
+  echo "=> Running command in foreman-development"
+  docker-compose -f docker-compose.development.yml run foreman-development "${@:-1}"
+}
+
+run () {
+  echo "=> Running command in foreman"
+  docker-compose -f docker-compose.yml run foreman "${@:-1}"
+}
+
+"$@"

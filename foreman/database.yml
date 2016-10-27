@@ -1,5 +1,5 @@
 production: &default
-  adapter: postgresql
+  adapter: <%= ENV['DB_ADAPTER'] ||= 'postgresql' %>
   encoding: unicode
   database: postgres
   pool: 5
@@ -7,6 +7,10 @@ production: &default
   password:
   host: db
 
+development:
+  <<: *default
+  database: foreman_development
+
 test:
   <<: *default
-  database: myapp_test
+  database: foreman_test

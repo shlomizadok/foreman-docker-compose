@@ -1,20 +1,34 @@
 FROM fedora:latest
-#RUN dnf -y update
-RUN dnf -y install ruby{,-devel,gems} rubygem-{nokogiri,bundler,unf_ext,rdoc} redhat-rpm-config nodejs npm git postgresql-devel gcc-c++ make hostname
-RUN dnf clean all
-LABEL MAINTAINER="ohadlevy@gmail.com"
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+MAINTAINER Ohad Levy "ohadlevy@gmail.com"
 
-ENV RAILS_ENV=production
-ENV FOREMAN_APIPIE_LANGS=en
-ENV REPO_URL=https://github.com/theforeman/foreman.git
+ARG foreman_version
+ARG foreman_mode
 
-#TODO: support local path instead of checkout
-RUN git clone ${REPO_URL} /usr/src/app
-RUN [ -e 'package.json' ] && npm install || exit 0
-ADD database.yml config/database.yml
-ADD Gemfile.local.rb bundler.d/Gemfile.local.rb
-ADD settings.yaml config/settings.yaml
-RUN bundle --without mysql:test:mysql2:development:sqlite:jenkins:openid:libvirt
+ENV FOREMAN_MODE $foreman_mode
+ENV FOREMAN_VERSION $foreman_version
+
+ENV RAILS_ENV $FOREMAN_MODE
+
+ENV FOREMAN_APIPIE_LANGS en
+ENV FOREMAN_PATH /usr/src/foreman
+ENV REPO_URL https://github.com/theforeman/foreman.git
+ENV BUNDLE_WITHOUT mysql:test:mysql2:development:sqlite:jenkins:openid:libvirt
+
+RUN mkdir -p $FOREMAN_PATH
+WORKDIR /$FOREMAN_PATH
+
+COPY ./support/start.sh /start.sh
+COPY ./support/bootstrap.sh /bootstrap.sh
+COPY ./support/install-packages.sh /install-packages.sh
+RUN /install-packages.sh
+
+RUN git clone $REPO_URL $FOREMAN_PATH
+
+COPY database.yml $FOREMAN_PATH/config/database.yml
+COPY Gemfile.local.rb $FOREMAN_PATH/bundler.d/
+COPY settings.yaml $FOREMAN_PATH/config/settings.yaml
+
+RUN /start.sh /bootstrap.sh
+
+ENTRYPOINT ["sh", "/start.sh"]
