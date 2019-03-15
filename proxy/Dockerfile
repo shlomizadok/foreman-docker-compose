@@ -7,6 +7,7 @@ RUN dnf -y install \
     ruby{,-devel,gems,-irb} \
     rubygem-{nokogiri,bundler,unf_ext,rdoc} \
     redhat-rpm-config \
+    systemd-devel \
     nodejs \
     postgresql-devel \
     git \
