@@ -17,6 +17,7 @@ RUN dnf -y install \
     gcc-c++ \
     make \
     hostname \
+    bzip2 \
  && dnf clean all
 
 WORKDIR /usr/src/app
