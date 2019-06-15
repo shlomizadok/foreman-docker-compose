@@ -2,7 +2,7 @@ FROM fedora:latest
 
 LABEL MAINTAINER="shlomi@ben-hanna.com"
 
-RUN dnf -y update
+RUN dnf clean all && dnf -y update
 RUN dnf -y install \
     ruby{,-devel,gems,-irb} \
     rubygem-{nokogiri,bundler,unf_ext,rdoc} \
