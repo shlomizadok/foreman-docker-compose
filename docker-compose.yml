@@ -3,7 +3,7 @@ version: '2'
 services:
   foreman:
     build: foreman
-    command: rails server -p 80 -b 0.0.0.0
+    command: bundle exec rails server -p 80 -b 0.0.0.0
     ports:
       - 80
     volumes:
