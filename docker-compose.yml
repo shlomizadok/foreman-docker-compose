@@ -3,7 +3,7 @@ version: '2'
 services:
   foreman:
     build: foreman
-    command: rails server -p 80 -b 0.0.0.0
+    command: bundle exec rails server -p 80 -b 0.0.0.0
     ports:
       - 80
     volumes:
@@ -47,8 +47,9 @@ services:
       - 1936:1936
 
   db:
-    image: postgres:9.5
+    image: postgres:10
     environment:
+      - POSTGRES_PASSWORD=postgres
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - ./pgdata:/var/lib/postgresql/data/pgdata:z
